@@ -1,14 +1,17 @@
 import secrets
 from urllib.parse import urlencode
 from flask import Flask, redirect, url_for, render_template, flash, session, \
-    current_app, request, abort
+    current_app, request, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, logout_user,\
     current_user
 import requests
 import constants
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app, resources={r"/*": {"origins": "*"}})
+
 app.config['SECRET_KEY'] = 'top secret!'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
 app.config['OAUTH2_PROVIDERS'] = {
@@ -44,6 +47,10 @@ def load_user(id):
 @app.route("/")
 def index():
     return render_template('index.html')
+
+@app.route("/api/test", methods=["GET"])
+def test():
+    return jsonify({'message': 'hello world!'})
 
 @app.route('/logout')
 def logout():
